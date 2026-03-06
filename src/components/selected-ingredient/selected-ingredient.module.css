@@ -1,0 +1,13 @@
+.selected_ingredient {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}

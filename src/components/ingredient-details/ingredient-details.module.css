@@ -1,0 +1,25 @@
+.ingredient_details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.ingredient_image img {
+  display: block;
+  width: 100%;
+}
+
+.macronutrients_list {
+  display: flex;
+  gap: 20px;
+}
+
+.macronutrients_item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 112px;
+  color: rgb(133 133 173 / 100%);
+}

@@ -1,0 +1,16 @@
+.price {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon_default {
+  width: 24px;
+  height: 24px;
+}
+
+.icon_medium {
+  width: 36px;
+  height: 36px;
+}
