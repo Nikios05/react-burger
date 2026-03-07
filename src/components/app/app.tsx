@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { AppHeader } from '@components/app-header/app-header';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
-import { getIngredients } from '@utils/getIngredients.ts';
+import { request } from '@utils/request.ts';
 
 import type { TIngredient } from '@utils/types.ts';
 
@@ -16,13 +16,9 @@ export const App = (): React.JSX.Element => {
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    getIngredients()
-      .then((data) => {
-        if (!data.success) {
-          setError('Get ingredients success failed');
-        }
-
-        setIngredients(data.data);
+    request('ingredients')
+      .then(({ data }) => {
+        setIngredients(data as TIngredient[]);
         setIsLoading(false);
       })
       .catch((error) => {

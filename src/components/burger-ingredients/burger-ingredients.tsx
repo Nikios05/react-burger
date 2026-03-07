@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 
 import { IngredientDetails } from '@components/ingredient-details/ingredient-details.tsx';
 import { IngredientSection } from '@components/ingredient-section/ingredient-section.tsx';
+import { Modal } from '@components/modal/modal.tsx';
 
 import type { TIngredient } from '@utils/types';
 
@@ -84,13 +85,15 @@ export const BurgerIngredients = ({
       </nav>
 
       {showDetails && selectIngredient && (
-        <IngredientDetails
-          ingredient={selectIngredient}
+        <Modal
+          title="Детали ингредиента"
           onClose={() => {
             setShowDetails(false);
             setSelectIngredient(null);
           }}
-        />
+        >
+          <IngredientDetails ingredient={selectIngredient} />
+        </Modal>
       )}
 
       <div className={clsx([styles.wrapper, 'custom-scroll'])}>

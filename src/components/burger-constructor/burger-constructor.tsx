@@ -1,7 +1,8 @@
 import { Button } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
+import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
 import { Price } from '@components/price/price.tsx';
 import { SelectedIngredient } from '@components/selected-ingredient/selected-ingredient.tsx';
@@ -19,10 +20,23 @@ export const BurgerConstructor = ({
 }: TBurgerConstructorProps): React.JSX.Element => {
   const [showOrderDetails, setShowOrderDetails] = useState(false);
 
+  /* Моковый список выбранных ингредиентов */
+  const selectedIngredients: TIngredient[] = useMemo(() => {
+    return ingredients.filter((ingredient) => ingredient.type !== 'bun');
+  }, ingredients);
+  /* Моковый выбор булочки */
+  const selectedBun: TIngredient | undefined = useMemo(() => {
+    return ingredients.find((ingredient) => ingredient.type === 'bun');
+  }, ingredients);
+
   return (
     <section className={styles.burger_constructor}>
       <div className={styles.selected_ingredient_list}>
-        <SelectedIngredient ingredient={ingredients[0]} type="top" isLocked />
+        <SelectedIngredient
+          ingredient={{ ...selectedBun!, name: `${selectedBun?.name} (верх)` }}
+          type="top"
+          isLocked
+        />
 
         <ul
           className={clsx(
@@ -31,7 +45,7 @@ export const BurgerConstructor = ({
             'custom-scroll'
           )}
         >
-          {ingredients.map((ingredient) => {
+          {selectedIngredients.map((ingredient) => {
             return (
               <li key={ingredient._id}>
                 <SelectedIngredient ingredient={ingredient} />
@@ -40,7 +54,11 @@ export const BurgerConstructor = ({
           })}
         </ul>
 
-        <SelectedIngredient ingredient={ingredients[0]} type="bottom" isLocked />
+        <SelectedIngredient
+          ingredient={{ ...selectedBun!, name: `${selectedBun?.name} (низ)` }}
+          type="bottom"
+          isLocked
+        />
       </div>
 
       <div className={clsx(styles.controls, 'pl-4 pr-4')}>
@@ -55,7 +73,11 @@ export const BurgerConstructor = ({
         </Button>
       </div>
 
-      {showOrderDetails && <OrderDetails onClose={() => setShowOrderDetails(false)} />}
+      {showOrderDetails && (
+        <Modal onClose={() => setShowOrderDetails(false)}>
+          <OrderDetails />
+        </Modal>
+      )}
     </section>
   );
 };
