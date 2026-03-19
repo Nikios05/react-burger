@@ -1,0 +1,10 @@
+.ingredient_section {
+  display: flex;
+  flex-direction: column;
+}
+
+.ingredients_list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}

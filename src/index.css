@@ -1,8 +1,19 @@
-body {
+* {
   margin: 0;
+  padding: 0;
+  border: none;
 }
 
-/* Fix for scrollbar */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+ul,
+ul li {
+  list-style: none;
+}
 
 @supports (scrollbar-color: auto) {
   .custom-scroll {

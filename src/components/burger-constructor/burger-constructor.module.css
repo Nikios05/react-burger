@@ -1,7 +1,26 @@
 .burger_constructor {
   display: flex;
   flex-direction: column;
+  gap: 40px;
   width: 600px;
   padding-bottom: 20px;
   color: var(--text-primary-color);
+}
+
+.selected_ingredient_list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.wrapper {
+  overflow-y: auto;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-left: auto;
 }
