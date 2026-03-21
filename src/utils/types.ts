@@ -12,3 +12,5 @@ export type TIngredient = {
   image_mobile: string;
   __v: number;
 };
+
+export type IngredientExtended = TIngredient & { innerId: string; position?: number };

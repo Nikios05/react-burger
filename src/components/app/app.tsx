@@ -1,34 +1,25 @@
 import { Preloader } from '@krgaa/react-developer-burger-ui-components';
-import { useEffect, useState } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { AppHeader } from '@components/app-header/app-header';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
-import { request } from '@utils/request.ts';
-
-import type { TIngredient } from '@utils/types.ts';
+import { useGetIngredientsQuery } from '@services/ingredients/api.ts';
 
 import styles from './app.module.css';
 
 export const App = (): React.JSX.Element => {
-  const [ingredients, setIngredients] = useState<TIngredient[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
-
-  useEffect(() => {
-    request('ingredients')
-      .then(({ data }) => {
-        setIngredients(data as TIngredient[]);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setError(`Get ingredients error ${error}`);
-        setIsLoading(false);
-      });
-  }, []);
+  const { data: ingredients = [], isLoading, error } = useGetIngredientsQuery();
 
   if (error) {
-    return <p>{error}</p>;
+    if ('status' in error) {
+      const errMsg = 'error' in error ? error.error : JSON.stringify(error.data);
+
+      return <p>{errMsg}</p>;
+    }
+
+    return <p>{error.message}</p>;
   }
 
   return (
@@ -41,8 +32,10 @@ export const App = (): React.JSX.Element => {
 
       {!isLoading ? (
         <main className={`${styles.main} pl-5 pr-5`}>
-          <BurgerIngredients ingredients={ingredients} />
-          <BurgerConstructor ingredients={ingredients} />
+          <DndProvider backend={HTML5Backend}>
+            <BurgerIngredients ingredients={ingredients} />
+            <BurgerConstructor />
+          </DndProvider>
         </main>
       ) : (
         <Preloader />

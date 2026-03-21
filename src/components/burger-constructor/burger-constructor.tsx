@@ -1,42 +1,63 @@
 import { Button } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
 import { Price } from '@components/price/price.tsx';
 import { SelectedIngredient } from '@components/selected-ingredient/selected-ingredient.tsx';
-
-import type { TIngredient } from '@utils/types';
+import { useSendOrderMutation } from '@services/orders/api.ts';
+import { deleteIngredient } from '@services/selected-ingredients/action.ts';
+import {
+  getOrderPrice,
+  getSelectedBun,
+  getSelectedIngredients,
+} from '@services/selected-ingredients/recuder.ts';
 
 import styles from './burger-constructor.module.css';
 
-type TBurgerConstructorProps = {
-  ingredients: TIngredient[];
-};
-
-export const BurgerConstructor = ({
-  ingredients,
-}: TBurgerConstructorProps): React.JSX.Element => {
+export const BurgerConstructor = (): React.JSX.Element => {
+  const dispatch = useDispatch();
   const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const [orderNumber, setOrderNumber] = useState<number | null>(null);
 
-  /* Моковый список выбранных ингредиентов */
-  const selectedIngredients: TIngredient[] = useMemo(() => {
-    return ingredients.filter((ingredient) => ingredient.type !== 'bun');
-  }, ingredients);
-  /* Моковый выбор булочки */
-  const selectedBun: TIngredient | undefined = useMemo(() => {
-    return ingredients.find((ingredient) => ingredient.type === 'bun');
-  }, ingredients);
+  const [sendOrder] = useSendOrderMutation();
+
+  const selectedIngredients = useSelector(getSelectedIngredients);
+  const selectedBun = useSelector(getSelectedBun);
+  const orderPrice = useSelector(getOrderPrice);
+
+  const orderSendHandler = (): void => {
+    if (!selectedBun) {
+      return;
+    }
+
+    const selectedIngredientsIds = selectedIngredients.map(({ _id }) => _id);
+    const selectedBunId = selectedBun._id;
+
+    sendOrder([selectedBunId, ...selectedIngredientsIds, selectedBunId])
+      .then((res) => {
+        const orderNumber = res.data?.order.number;
+
+        if (orderNumber) {
+          setOrderNumber(orderNumber);
+          setShowOrderDetails(true);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to send order:', err);
+      });
+  };
+
+  const deleteIngredientHandler = (id: string): void => {
+    dispatch(deleteIngredient(id));
+  };
 
   return (
     <section className={styles.burger_constructor}>
       <div className={styles.selected_ingredient_list}>
-        <SelectedIngredient
-          ingredient={{ ...selectedBun!, name: `${selectedBun?.name} (верх)` }}
-          type="top"
-          isLocked
-        />
+        <SelectedIngredient ingredient={selectedBun} type="top" isLocked />
 
         <ul
           className={clsx(
@@ -45,37 +66,41 @@ export const BurgerConstructor = ({
             'custom-scroll'
           )}
         >
-          {selectedIngredients.map((ingredient) => {
-            return (
-              <li key={ingredient._id}>
-                <SelectedIngredient ingredient={ingredient} />
-              </li>
-            );
-          })}
+          {selectedIngredients.length > 0 ? (
+            selectedIngredients.map((ingredient) => {
+              return (
+                <li key={ingredient.innerId}>
+                  <SelectedIngredient
+                    ingredient={ingredient}
+                    deleteHandler={() => deleteIngredientHandler(ingredient.innerId)}
+                  />
+                </li>
+              );
+            })
+          ) : (
+            <SelectedIngredient />
+          )}
         </ul>
 
-        <SelectedIngredient
-          ingredient={{ ...selectedBun!, name: `${selectedBun?.name} (низ)` }}
-          type="bottom"
-          isLocked
-        />
+        <SelectedIngredient ingredient={selectedBun} type="bottom" isLocked />
       </div>
 
       <div className={clsx(styles.controls, 'pl-4 pr-4')}>
-        <Price price={610} size="medium" />
+        <Price price={orderPrice} size="medium" />
         <Button
           size="large"
           type="primary"
           htmlType="button"
-          onClick={() => setShowOrderDetails(true)}
+          onClick={orderSendHandler}
+          disabled={!selectedBun}
         >
           Оформить заказ
         </Button>
       </div>
 
-      {showOrderDetails && (
+      {showOrderDetails && orderNumber && (
         <Modal onClose={() => setShowOrderDetails(false)}>
-          <OrderDetails />
+          <OrderDetails orderNumber={orderNumber} />
         </Modal>
       )}
     </section>

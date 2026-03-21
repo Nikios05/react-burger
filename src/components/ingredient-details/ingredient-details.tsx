@@ -1,14 +1,16 @@
-import type { TIngredient } from '@utils/types.ts';
+import { useSelector } from 'react-redux';
+
+import { getIngredientInfo } from '@services/ingredient-info/recuder.ts';
 
 import styles from './ingredient-details.module.css';
 
-type IngredientDetailsProps = {
-  ingredient: TIngredient;
-};
+export const IngredientDetails = (): React.JSX.Element | null => {
+  const ingredient = useSelector(getIngredientInfo);
 
-export const IngredientDetails = ({
-  ingredient,
-}: IngredientDetailsProps): React.JSX.Element => {
+  if (!ingredient) {
+    return null;
+  }
+
   return (
     <div className={styles.ingredient_details}>
       <div className={styles.ingredient_image}>
