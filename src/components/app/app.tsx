@@ -10,7 +10,7 @@ import { useGetIngredientsQuery } from '@services/ingredients/api.ts';
 import styles from './app.module.css';
 
 export const App = (): React.JSX.Element => {
-  const { data: ingredients = [], isLoading, error } = useGetIngredientsQuery();
+  const { isLoading, error } = useGetIngredientsQuery();
 
   if (error) {
     if ('status' in error) {
@@ -33,7 +33,7 @@ export const App = (): React.JSX.Element => {
       {!isLoading ? (
         <main className={`${styles.main} pl-5 pr-5`}>
           <DndProvider backend={HTML5Backend}>
-            <BurgerIngredients ingredients={ingredients} />
+            <BurgerIngredients />
             <BurgerConstructor />
           </DndProvider>
         </main>

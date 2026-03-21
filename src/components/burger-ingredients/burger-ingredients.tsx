@@ -11,19 +11,16 @@ import {
   showIngredientInfo,
 } from '@services/ingredient-info/action.ts';
 import { getShowModalIngredient } from '@services/ingredient-info/recuder.ts';
+import { useGetIngredientsQuery } from '@services/ingredients/api.ts';
 import { INGREDIENTS_TABS } from '@utils/const.ts';
 
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-ingredients.module.css';
 
-type TBurgerIngredientsProps = {
-  ingredients: TIngredient[];
-};
+export const BurgerIngredients = (): React.JSX.Element => {
+  const { data: ingredients = [] } = useGetIngredientsQuery();
 
-export const BurgerIngredients = ({
-  ingredients,
-}: TBurgerIngredientsProps): React.JSX.Element => {
   const [currentClosestSection, setCurrentClosestSection] = useState('bun');
   const ingredientsListRef = useRef<HTMLUListElement | null>(null);
   const ingredientSectionRefs = useRef<Map<string, HTMLElement>>(new Map());

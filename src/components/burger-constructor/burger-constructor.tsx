@@ -8,7 +8,10 @@ import { OrderDetails } from '@components/order-details/order-details.tsx';
 import { Price } from '@components/price/price.tsx';
 import { SelectedIngredient } from '@components/selected-ingredient/selected-ingredient.tsx';
 import { useSendOrderMutation } from '@services/orders/api.ts';
-import { deleteIngredient } from '@services/selected-ingredients/action.ts';
+import {
+  clearIngredients,
+  deleteIngredient,
+} from '@services/selected-ingredients/action.ts';
 import {
   getOrderPrice,
   getSelectedBun,
@@ -43,6 +46,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
         if (orderNumber) {
           setOrderNumber(orderNumber);
           setShowOrderDetails(true);
+          dispatch(clearIngredients());
         }
       })
       .catch((err) => {

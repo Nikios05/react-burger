@@ -1,7 +1,8 @@
-import { createSelector, createSlice, nanoid } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
 
 import {
   addIngredient,
+  clearIngredients,
   deleteIngredient,
   swapIngredients,
 } from '@services/selected-ingredients/action.ts';
@@ -69,7 +70,7 @@ export const selectedIngredientsSlice = createSlice({
         if (action.payload.type === 'bun') {
           state.bun = action.payload;
         } else {
-          state.ingredients.push({ ...action.payload, innerId: nanoid() });
+          state.ingredients.push(action.payload);
         }
       })
       .addCase(swapIngredients, (state, action) => {
@@ -83,6 +84,10 @@ export const selectedIngredientsSlice = createSlice({
         state.ingredients = state.ingredients.filter(
           (ingredient) => ingredient.innerId !== action.payload
         );
+      })
+      .addCase(clearIngredients, (state) => {
+        state.ingredients = [];
+        state.bun = null;
       });
   },
 });

@@ -2,12 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { API_BASE_URL } from '@utils/request.ts';
 
+import type { TApiResponse } from '@utils/request.ts';
 import type { TIngredient } from '@utils/types.ts';
-
-type TApiResponse = {
-  success: boolean;
-  data: TIngredient[];
-};
 
 export const ingredientsApi = createApi({
   reducerPath: 'ingredientsApi',
