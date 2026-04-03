@@ -2,10 +2,14 @@ import { clsx } from 'clsx';
 
 import styles from './order-details.module.css';
 
-export const OrderDetails = (): React.JSX.Element => {
+type OrderDetailsProps = {
+  orderNumber: number;
+};
+
+export const OrderDetails = ({ orderNumber }: OrderDetailsProps): React.JSX.Element => {
   return (
     <div className={clsx(styles.order_modal, 'pt-4 pb-15')}>
-      <h2 className="text text_type_digits-large mb-8">034536</h2>
+      <h2 className="text text_type_digits-large mb-8">{orderNumber}</h2>
       <p className="text text_type_main-medium">идентификатор заказа</p>
 
       <div className="pt-15 pb-15">

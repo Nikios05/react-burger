@@ -11,3 +11,13 @@
   left: 0;
   transform: translateY(-50%);
 }
+
+.constructor_element_placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.highlight {
+  border: 1px dashed rgb(76 76 255 / 100%);
+}
