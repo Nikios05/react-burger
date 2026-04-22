@@ -2,7 +2,7 @@ import { Button, Input } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { type FormEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 
 import { useFormWithValidation } from '@hooks/use-form-with-validation.ts';
 import { type IUser, selectUser } from '@services/user/reducer.ts';
@@ -16,7 +16,6 @@ export const ProfilePage = (): React.JSX.Element => {
 
   const location = useLocation();
   const isProfilePath = location.pathname === '/profile';
-  const isOrdersPath = location.pathname === '/profile/orders';
 
   const [logout] = useLogoutMutation();
   const [updateUser] = useUpdateUserMutation();
@@ -39,9 +38,13 @@ export const ProfilePage = (): React.JSX.Element => {
 
   const handleSubmit = (event: FormEvent): void => {
     event.preventDefault();
-    updateUser(values as IUser).catch((err: Error) => {
-      console.error('Failed update user data:', err);
-    });
+    updateUser(values as IUser)
+      .then(() => {
+        setShowControls(false);
+      })
+      .catch((err: Error) => {
+        console.error('Failed update user data:', err);
+      });
   };
 
   const handleCancel = (): void => {
@@ -61,28 +64,32 @@ export const ProfilePage = (): React.JSX.Element => {
       <div className={styles.left_column}>
         <ul className={styles.nav_list}>
           <li className={styles.nav_item}>
-            <Link to={'/profile'}>
-              <span
-                className={clsx([
+            <NavLink
+              to={'/profile'}
+              end
+              className={({ isActive }) => {
+                return clsx([
                   'text text_type_main-medium text_color_inactive',
-                  isProfilePath && styles.nav_item_active,
-                ])}
-              >
-                Профиль
-              </span>
-            </Link>
+                  isActive && styles.nav_item_active,
+                ]);
+              }}
+            >
+              Профиль
+            </NavLink>
           </li>
           <li className={styles.nav_item}>
-            <Link to={'/profile/orders'}>
-              <span
-                className={clsx([
+            <NavLink
+              to={'/profile/orders'}
+              end
+              className={({ isActive }) => {
+                return clsx([
                   'text text_type_main-medium text_color_inactive',
-                  isOrdersPath && styles.nav_item_active,
-                ])}
-              >
-                История заказов
-              </span>
-            </Link>
+                  isActive && styles.nav_item_active,
+                ]);
+              }}
+            >
+              История заказов
+            </NavLink>
           </li>
           <li className={styles.nav_item}>
             <button onClick={logoutHandler}>

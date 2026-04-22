@@ -38,6 +38,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const orderSendHandler = (): void => {
     if (!isTokenExists()) {
       void navigate('/login');
+      return;
     }
 
     if (!selectedBun) {

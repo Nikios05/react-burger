@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { ProtectedRoute } from '@components/protected-route/protected-route.tsx';
-import { UnAuthWrapperPage } from '@components/unauth-wrapper-page/un-auth-wrapper-page.tsx';
 import { WrapperPage } from '@components/wrapper-page/wrapper-page.tsx';
 import { FeedPage } from '@pages/feed/feed.tsx';
 import { ForgotPasswordPage } from '@pages/forgot-password/forgot-password.tsx';
@@ -27,12 +26,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
-        children: [
-          {
-            path: 'ingredients/:id',
-            element: <Ingredient />,
-          },
-        ],
+      },
+      {
+        path: '/ingredients/:id',
+        element: <Ingredient />,
       },
       {
         path: '/feed',
@@ -47,7 +44,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <ProtectedRoute onlyUnAuth component={<UnAuthWrapperPage />} />,
+    element: <ProtectedRoute onlyUnAuth component={<WrapperPage />} />,
     children: [
       {
         path: '/register',

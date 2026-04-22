@@ -1,6 +1,6 @@
 import { clsx } from 'clsx';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { IngredientCard } from '@components/ingredient-card/ingredient-card.tsx';
 import { getSelectedIngredientsCountMap } from '@services/selected-ingredients/recuder.ts';
@@ -19,6 +19,13 @@ export const IngredientSection = ({
   ingredients,
 }: TBurgerIngredientsProps): React.JSX.Element => {
   const selectedCountMap = useSelector(getSelectedIngredientsCountMap);
+  const navigate = useNavigate();
+
+  const ingredientOpen = (ingredient: TIngredient): void => {
+    void navigate(`/ingredients/${ingredient._id}`, {
+      state: { background: true },
+    });
+  };
 
   return (
     <section className={styles.ingredient_section}>
@@ -27,13 +34,11 @@ export const IngredientSection = ({
       <ul className={clsx([styles.ingredients_list, 'pt-6 pr-4 pb-10 pl-4'])}>
         {ingredients.map((ingredient) => {
           return (
-            <li key={ingredient._id}>
-              <Link to={`/ingredients/${ingredient._id}`}>
-                <IngredientCard
-                  ingredient={ingredient}
-                  count={selectedCountMap[ingredient._id]}
-                />
-              </Link>
+            <li key={ingredient._id} onClick={() => ingredientOpen(ingredient)}>
+              <IngredientCard
+                ingredient={ingredient}
+                count={selectedCountMap[ingredient._id]}
+              />
             </li>
           );
         })}
