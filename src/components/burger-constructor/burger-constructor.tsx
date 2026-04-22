@@ -2,6 +2,7 @@ import { Button } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
@@ -17,6 +18,7 @@ import {
   getSelectedBun,
   getSelectedIngredients,
 } from '@services/selected-ingredients/recuder.ts';
+import { isTokenExists } from '@utils/tokens.ts';
 
 import styles from './burger-constructor.module.css';
 
@@ -25,6 +27,8 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [orderNumber, setOrderNumber] = useState<number | null>(null);
 
+  const navigate = useNavigate();
+
   const [sendOrder] = useSendOrderMutation();
 
   const selectedIngredients = useSelector(getSelectedIngredients);
@@ -32,6 +36,10 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const orderPrice = useSelector(getOrderPrice);
 
   const orderSendHandler = (): void => {
+    if (!isTokenExists()) {
+      void navigate('/login');
+    }
+
     if (!selectedBun) {
       return;
     }

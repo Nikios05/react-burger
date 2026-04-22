@@ -35,8 +35,8 @@ export const ingredientSlice = createSlice({
         state.ingredientInfo = action.payload;
         state.showModalIngredient = true;
       })
-      .addCase(closeIngredientInfo, (state, action) => {
-        state.ingredientInfo = action.payload;
+      .addCase(closeIngredientInfo, (state) => {
+        state.ingredientInfo = null;
         state.showModalIngredient = false;
       })
       .addCase(toggleCurrentDragIngredient, (state, action) => {

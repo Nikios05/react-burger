@@ -1,0 +1,43 @@
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { IngredientDetails } from '@components/ingredient-details/ingredient-details.tsx';
+import { Modal } from '@components/modal/modal.tsx';
+import {
+  closeIngredientInfo,
+  showIngredientInfo,
+} from '@services/ingredient-info/action.ts';
+import { useGetIngredientsQuery } from '@services/ingredients/api.ts';
+
+export const Ingredient = (): React.JSX.Element => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const { data: ingredients = [] } = useGetIngredientsQuery();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (id) {
+      const findIngredient = ingredients.find((ingredient) => ingredient._id === id);
+
+      if (findIngredient) {
+        dispatch(showIngredientInfo(findIngredient));
+      } else {
+        void navigate('/');
+      }
+    }
+  }, [id]);
+
+  return (
+    <Modal
+      title="Детали ингредиента"
+      onClose={() => {
+        dispatch(closeIngredientInfo());
+        void navigate('/');
+      }}
+    >
+      <IngredientDetails />
+    </Modal>
+  );
+};
