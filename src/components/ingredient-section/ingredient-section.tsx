@@ -22,9 +22,7 @@ export const IngredientSection = ({
   const navigate = useNavigate();
 
   const ingredientOpen = (ingredient: TIngredient): void => {
-    void navigate(`/ingredients/${ingredient._id}`, {
-      state: { background: true },
-    });
+    void navigate(`/ingredients/${ingredient._id}`);
   };
 
   return (

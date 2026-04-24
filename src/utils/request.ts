@@ -10,7 +10,7 @@ const checkResponse = <T extends TApiResponse>(res: Response): Promise<T> => {
     return res.json();
   }
 
-  return Promise.reject(new Error(res.statusText));
+  return Promise.reject(res as unknown as Error);
 };
 
 const checkSuccess = <T extends TApiResponse>(res: T): T | Promise<never> => {
