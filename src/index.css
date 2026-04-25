@@ -15,6 +15,11 @@ ul li {
   list-style: none;
 }
 
+a {
+  color: var(--text-primary-color);
+  text-decoration: none;
+}
+
 @supports (scrollbar-color: auto) {
   .custom-scroll {
     scrollbar-color: #8585ad #2f2f37;

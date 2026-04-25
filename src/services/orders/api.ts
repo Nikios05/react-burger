@@ -13,6 +13,9 @@ type OrderResponse = {
 export const ordersApi = createApi({
   reducerPath: 'ordersApi',
   baseQuery: fetchBaseQuery({
+    headers: {
+      authorization: localStorage.getItem('accessToken') ?? '',
+    },
     baseUrl: API_BASE_URL,
   }),
   endpoints: (builder) => ({

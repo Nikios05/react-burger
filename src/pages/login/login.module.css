@@ -1,0 +1,28 @@
+.login {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
+}
+
+.login_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.login_footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}

@@ -11,11 +11,7 @@ export const showIngredientInfo = createAction(
   }
 );
 
-export const closeIngredientInfo = createAction('close-ingredient-info', () => {
-  return {
-    payload: null,
-  };
-});
+export const closeIngredientInfo = createAction('close-ingredient-info');
 
 export const toggleCurrentDragIngredient = createAction(
   'toggle-current-drag-ingredient',

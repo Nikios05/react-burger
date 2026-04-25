@@ -1,16 +1,8 @@
 import { Tab } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useMemo, useState, useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { IngredientDetails } from '@components/ingredient-details/ingredient-details.tsx';
 import { IngredientSection } from '@components/ingredient-section/ingredient-section.tsx';
-import { Modal } from '@components/modal/modal.tsx';
-import {
-  closeIngredientInfo,
-  showIngredientInfo,
-} from '@services/ingredient-info/action.ts';
-import { getShowModalIngredient } from '@services/ingredient-info/recuder.ts';
 import { useGetIngredientsQuery } from '@services/ingredients/api.ts';
 import { INGREDIENTS_TABS } from '@utils/const.ts';
 
@@ -24,9 +16,6 @@ export const BurgerIngredients = (): React.JSX.Element => {
   const [currentClosestSection, setCurrentClosestSection] = useState('bun');
   const ingredientsListRef = useRef<HTMLUListElement | null>(null);
   const ingredientSectionRefs = useRef<Map<string, HTMLElement>>(new Map());
-
-  const dispatch = useDispatch();
-  const showModalIngredient = useSelector(getShowModalIngredient);
 
   useEffect(() => {
     ingredientsListRef.current?.addEventListener('scroll', handleScroll);
@@ -110,17 +99,6 @@ export const BurgerIngredients = (): React.JSX.Element => {
         </ul>
       </nav>
 
-      {showModalIngredient && (
-        <Modal
-          title="Детали ингредиента"
-          onClose={() => {
-            dispatch(closeIngredientInfo());
-          }}
-        >
-          <IngredientDetails />
-        </Modal>
-      )}
-
       <ul className={clsx([styles.wrapper, 'custom-scroll'])} ref={ingredientsListRef}>
         {ingredientsByType.map((item, index) => {
           return (
@@ -134,13 +112,7 @@ export const BurgerIngredients = (): React.JSX.Element => {
                 }
               }}
             >
-              <IngredientSection
-                title={item.title}
-                ingredients={item.ingredients}
-                onClick={(ingredient) => {
-                  dispatch(showIngredientInfo(ingredient));
-                }}
-              />
+              <IngredientSection title={item.title} ingredients={item.ingredients} />
             </li>
           );
         })}

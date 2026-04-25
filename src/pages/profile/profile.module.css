@@ -1,0 +1,45 @@
+.profile {
+  display: flex;
+  flex-grow: 1;
+  align-items: flex-start;
+  gap: 60px;
+  max-width: 1240px;
+  margin-top: 120px;
+}
+
+.profile_text_info {
+  opacity: 0.4;
+}
+
+.profile_inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.left_column {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  max-width: 320px;
+}
+
+.nav_list {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav_item {
+  min-height: 64px;
+}
+
+.nav_item button {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.nav_item_active {
+  color: var(--text-primary-color);
+}

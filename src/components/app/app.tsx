@@ -1,45 +1,85 @@
-import { Preloader } from '@krgaa/react-developer-burger-ui-components';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { AppHeader } from '@components/app-header/app-header';
-import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
-import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
-import { useGetIngredientsQuery } from '@services/ingredients/api.ts';
+import { ProtectedRoute } from '@components/protected-route/protected-route.tsx';
+import { WrapperPage } from '@components/wrapper-page/wrapper-page.tsx';
+import { FeedPage } from '@pages/feed/feed.tsx';
+import { ForgotPasswordPage } from '@pages/forgot-password/forgot-password.tsx';
+import { Home } from '@pages/home/home.tsx';
+import { Ingredient } from '@pages/ingredient/ingredient.tsx';
+import { LoginPage } from '@pages/login/login.tsx';
+import { NotFoundPage } from '@pages/not-found/not-found.tsx';
+import { OrdersPage } from '@pages/orders/orders.tsx';
+import { ProfilePage } from '@pages/profile/profile.tsx';
+import { RegisterPage } from '@pages/register/register.tsx';
+import { ResetPasswordPage } from '@pages/reset-password/reset-password.tsx';
+import { checkUserAuth } from '@services/user/action.ts';
 
-import styles from './app.module.css';
+import type { AppDispatch } from '@services/store.ts';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <WrapperPage />,
+    children: [
+      {
+        path: '/',
+        element: <Home />,
+        children: [
+          {
+            path: '/ingredients/:id',
+            element: <Ingredient />,
+          },
+        ],
+      },
+      {
+        path: '/feed',
+        element: <FeedPage />,
+      },
+      {
+        path: '/profile',
+        element: <ProtectedRoute component={<ProfilePage />} />,
+        children: [{ path: 'orders', element: <OrdersPage /> }],
+      },
+    ],
+  },
+  {
+    path: '/',
+    element: <ProtectedRoute onlyUnAuth component={<WrapperPage />} />,
+    children: [
+      {
+        path: '/register',
+        element: <RegisterPage />,
+      },
+      {
+        path: '/login',
+        element: <LoginPage />,
+      },
+      {
+        path: '/forgot-password',
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: '/reset-password',
+        element: <ResetPasswordPage />,
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: <NotFoundPage />,
+  },
+]);
 
 export const App = (): React.JSX.Element => {
-  const { isLoading, error } = useGetIngredientsQuery();
+  const dispatch = useDispatch<AppDispatch>();
 
-  if (error) {
-    if ('status' in error) {
-      const errMsg = 'error' in error ? error.error : JSON.stringify(error.data);
+  useEffect(() => {
+    dispatch(checkUserAuth()).catch((error) => {
+      console.error('Auth check failed:', error);
+    });
+  }, [dispatch]);
 
-      return <p>{errMsg}</p>;
-    }
-
-    return <p>{error.message}</p>;
-  }
-
-  return (
-    <div className={styles.app}>
-      <AppHeader />
-
-      <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
-        Соберите бургер
-      </h1>
-
-      {!isLoading ? (
-        <main className={`${styles.main} pl-5 pr-5`}>
-          <DndProvider backend={HTML5Backend}>
-            <BurgerIngredients />
-            <BurgerConstructor />
-          </DndProvider>
-        </main>
-      ) : (
-        <Preloader />
-      )}
-    </div>
-  );
+  return <RouterProvider router={router} />;
 };

@@ -19,6 +19,20 @@ const initialState: TIngredientInfoState = {
   ingredients: [],
 };
 
+const selectBun = (state: TIngredientInfoState): IngredientExtended | null => state.bun;
+const selectIngredients = (state: TIngredientInfoState): IngredientExtended[] =>
+  state.ingredients;
+
+const getSelectedIngredientsSelector = createSelector(
+  [selectIngredients],
+  (ingredients) => {
+    return ingredients.map((ingredient, i) => ({
+      ...ingredient,
+      position: i,
+    }));
+  }
+);
+
 const getSelectedIngredientsCountMapSelector = createSelector(
   [
     (state: TIngredientInfoState): IngredientExtended[] => {
@@ -38,30 +52,26 @@ const getSelectedIngredientsCountMapSelector = createSelector(
   }
 );
 
+const getOrderPriceSelector = createSelector(
+  [selectBun, selectIngredients],
+  (bun, ingredients) => {
+    const ingredientsPriceSum = ingredients.reduce(
+      (sum, ingredient) => sum + ingredient.price,
+      0
+    );
+
+    return bun ? ingredientsPriceSum + bun.price * 2 : ingredientsPriceSum;
+  }
+);
+
 export const selectedIngredientsSlice = createSlice({
   name: 'selected-ingredients',
   initialState,
   selectors: {
-    getSelectedBun: (state) => state.bun,
-    getSelectedIngredients: (state) =>
-      state.ingredients.map((ingredient, i) => ({ ...ingredient, position: i })),
+    getSelectedBun: selectBun,
+    getSelectedIngredients: getSelectedIngredientsSelector,
     getSelectedIngredientsCountMap: getSelectedIngredientsCountMapSelector,
-    getOrderPrice: createSelector(
-      [
-        (state: TIngredientInfoState): number[] => {
-          const ingredientsPrices = state.ingredients.map(
-            (ingredient) => ingredient.price
-          );
-
-          return state.bun
-            ? [state.bun.price, ...ingredientsPrices, state.bun.price]
-            : ingredientsPrices;
-        },
-      ],
-      (ingredientsPrices) => {
-        return ingredientsPrices.reduce((acc, item) => acc + item, 0);
-      }
-    ),
+    getOrderPrice: getOrderPriceSelector,
   },
   reducers: {},
   extraReducers: (builder) => {
